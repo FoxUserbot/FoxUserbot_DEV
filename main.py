@@ -108,8 +108,7 @@ def userbot():
         success, user = start_web_auth(api_id, api_hash, device_mod)
         
         if not success or user is None:
-            print("❌ Authorization failed!")
-
+            print("❌ Authorization failed! ")
             return
         else:
             if not os.path.exists("my_account.session"):
