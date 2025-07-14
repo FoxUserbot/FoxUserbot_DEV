@@ -8,7 +8,6 @@ requirements_install = [
     "install",
     "wheel",
     "telegraph",
-    "requests",
     "wget",
     "pystyle",
     "kurigram",
@@ -22,8 +21,10 @@ def check_structure():
         os.remove("localtunnel_output.txt")
     if not os.path.exists("temp"):
         os.mkdir("temp")
-    if not os.path.exists("temp/autoanswer_DB"):
-        os.mkdir("temp/autoanswer_DB")
+    if not os.path.exists("userdata"):
+        os.mkdir("userdata")
+    if not os.path.exists("triggers"):
+        os.mkdir("triggers")
 
 
 def autoupdater():
@@ -143,7 +144,7 @@ def userbot():
             os.execv(sys.executable, [sys.executable] + sys.argv + ["--safe"])
         else:
             print(f"🦊 Critical error in safe mode: {e}")
-            logging.critical(f"Critical error in CLI safe mode: {e}")
+            logging.critical(f"Critical error in safe mode: {e}")
 
 
 if __name__ == "__main__":
