@@ -39,7 +39,7 @@ if os.path.exists("temp/lastfm_autostart.txt"):
 modules = ["user_info.py", "weather.py", "webshot.py", "wikipedia.py", "switch.py", "tagall.py",
            "time_now.py", "type.py", "stats.py", "spamban.py", "spam.py", "speech.py", "short.py",
            "sendToId.py", "qr.py", "quotes.py", "reputation.py", "premium_text.py", "progressbar.py",
-           "purge.py", "ignore.py", "kickall.py", "ladder.py", "lastfm.py", "link.py", "find_id.py",
+           "purge.py", "ignore.py", "kickall.py", "ladder.py", "lastfm.py", "link.py",
            "find_music.py", "gen_pass.py", "hearts.py", "afk.py", "autoanswer.py", "autoonline.py",
            "autoread.py", "chance.py", "demotivator.py"]
 for _ in modules:
