@@ -43,7 +43,3 @@ def prestart(api_id, api_hash, device_mod):
             with open(f"triggers/{i}", 'r') as f:
                 text = f.read().strip()
                 app.send_message("me", text, schedule_date=(datetime.now() + timedelta(seconds=70)))
-        
-        # # last.fm trigger
-        # if Path(f"temp/lastfm_autostart.txt").is_file():
-        #     app.send_message("me", "last_fm_trigger_start", schedule_date=(datetime.now() + timedelta(seconds=70)))
