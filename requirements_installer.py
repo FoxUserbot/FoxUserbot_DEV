@@ -1,4 +1,5 @@
-import pip
+import subprocess
+import sys
 
 def install_library(name):
     requirements = ["install"]
@@ -6,4 +7,4 @@ def install_library(name):
         requirements.append(i)
     
     print(requirements)
-    pip.main(requirements)
+    subprocess.run([sys.executable, "-m", "uv", "pip"] + requirements + ["--system"], check=True)

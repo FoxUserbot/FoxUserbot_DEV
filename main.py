@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
-import pip
+import subprocess
+import sys
 import os
 import time
 
 requirements_install = [
     "install",
+    "uv",
     "wheel",
     "telegraph",
     "wget",
@@ -29,6 +31,12 @@ def check_structure():
 
 def autoupdater():
     try:
+        import uv
+    except ImportError:
+        print("🦊 Installing uv...")
+        subprocess.run([sys.executable, "-m", "pip", "install", "uv"], check=True)
+
+    try:
         from pyrogram.client import Client
     except ImportError:
         try:
@@ -45,11 +53,11 @@ def autoupdater():
         pass
 
     if not first_launched:
-        pip.main(["uninstall", "pyrogram", "kurigram", "-y"])
+        subprocess.run([sys.executable, "-m", "uv", "pip", "uninstall", "pyrogram", "kurigram"], check=True)
         with open("firstlaunch.temp", "w", encoding="utf-8") as f:
             f.write("1")
 
-    pip.main(requirements_install)
+    subprocess.run([sys.executable, "-m", "uv", "pip"] + requirements_install + ["--system"], check=True)
 
 
 
