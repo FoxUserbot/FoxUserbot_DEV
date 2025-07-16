@@ -90,7 +90,8 @@ AI will automatically convert the module from Telethon to Pyrogram for this User
 ```
 pkg update -y && pkg install python3 python3-venv wget unzip -y && termux-wake-lock && wget -O foxub.$$ https://github.com/FoxUserbot/FoxUserbot/archive/refs/heads/main.zip && (unzip foxub.$$ && rm -rf foxub.$$ && cd FoxUserbot-main && python3 -m venv venv && source venv/bin/activate && python3 main.py --cli)
 ```
-[!IMPORTANT] Further installation (except for macOS and Docker) must be done as root or use sudo
+> [!IMPORTANT]
+> Further installation (except for macOS and Docker) must be done as root or use sudo
 - APT (Debian based)
 
 ```
@@ -131,7 +132,8 @@ xcode-select --install ; /bin/bash -c "$(curl -fsSL https://raw.githubuserconten
 docker build -t foxuserbot .
 docker run -p 5555:5555 foxuserbot
 ```
-> [!IMPORTANT] If you get an error like:
+> [!IMPORTANT]
+> If you get an error like:
 > ```
 > error: externally-managed-environment
 >
