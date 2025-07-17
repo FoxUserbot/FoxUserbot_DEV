@@ -1,21 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
-import subprocess
-import sys
+import pip
 import os
 import time
+import sys
+import re
 
-requirements_install = [
-    "install",
-    "uv",
-    "wheel",
-    "telegraph",
-    "wget",
-    "pystyle",
-    "kurigram",
-    "flask",
-    "--upgrade",
-]
+from requirements_installer import install_library
 
 
 def check_structure():
@@ -23,6 +14,11 @@ def check_structure():
         os.remove("localtunnel_output.txt")
     if not os.path.exists("temp"):
         os.mkdir("temp")
+    try:
+        if os.path.exists("temp/fox_userbot.log"):
+            os.remove("temp/fox_userbot.log")
+    except:
+        pass
     if not os.path.exists("userdata"):
         os.mkdir("userdata")
     if not os.path.exists("triggers"):
@@ -30,12 +26,6 @@ def check_structure():
 
 
 def autoupdater():
-    try:
-        import uv
-    except ImportError:
-        print("🦊 Installing uv...")
-        subprocess.run([sys.executable, "-m", "pip", "install", "uv"], check=True)
-
     try:
         from pyrogram.client import Client
     except ImportError:
@@ -53,24 +43,15 @@ def autoupdater():
         pass
 
     if not first_launched:
-        subprocess.run([sys.executable, "-m", "uv", "pip", "uninstall", "pyrogram", "kurigram"], check=True)
+        pip.main(["uninstall", "pyrogram", "kurigram", "-y"])
         with open("firstlaunch.temp", "w", encoding="utf-8") as f:
             f.write("1")
 
-    subprocess.run([sys.executable, "-m", "uv", "pip"] + requirements_install + ["--system"], check=True)
-
-
-
-
-def logger():
-    logging.basicConfig(
-        filename="temp/fox_userbot.log",
-        filemode="w",
-        format="%(asctime)s - %(message)s",
-        datefmt="%d-%b-%y %H:%M:%S",
-        level=logging.INFO
-    )
-
+    # install requirements for userbot
+    install_library('wheel telegraph wget pystyle flask -U')
+    install_library('kurigram==2.1.37')
+    setup_logging()
+    logger.info("Логирование восстановлено после установки зависимостей")
 
 
 async def start_userbot(app):
@@ -87,6 +68,29 @@ async def start_userbot(app):
         os.execv(sys.executable, [sys.executable] + sys.argv)
 
 
+def setup_logging():
+    log_file = 'temp/fox_userbot.log'
+    
+    # Удаляем все старые обработчики
+    root_logger = logging.getLogger()
+    for handler in root_logger.handlers[:]:
+        root_logger.removeHandler(handler)
+    
+    # Настраиваем новые обработчики
+    file_handler = logging.FileHandler(log_file, encoding='utf-8')
+    console_handler = logging.StreamHandler()
+    
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter)
+    
+    root_logger.addHandler(file_handler)
+    root_logger.addHandler(console_handler)
+    root_logger.setLevel(logging.INFO)
+    
+    return root_logger
+
+
 def userbot():
     from pyrogram.client import Client
     from configurator import my_api
@@ -101,7 +105,6 @@ def userbot():
     if "--safe" in sys.argv:
         safe_mode = True
         print("🦊 Starting in safe mode (only system plugins)...")
-    
     
     api_id, api_hash, device_mod = my_api()
 
@@ -157,6 +160,7 @@ def userbot():
 
 if __name__ == "__main__":
     check_structure()
-    logger()
+    logger = setup_logging()
+    logger.info("Starting FoxUserbot...")
     autoupdater()
     userbot()
