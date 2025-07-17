@@ -2,10 +2,12 @@ import pip
 import os
 import sys
 import logging
-
 from contextlib import contextmanager
 
 logger = logging.getLogger('FoxUserbot')
+
+def is_venv():
+    return hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix)
 
 @contextmanager
 def _preserve_logging_handlers():
@@ -22,9 +24,8 @@ def _preserve_logging_handlers():
 def install_library(name):
     packages = name.split() if isinstance(name, str) else name
     
-    # try uv
     uv_cmd = [sys.executable, "-m", "uv", "pip", "install"] + packages
-    if os.name == "nt":
+    if not is_venv() and os.name == "nt":
         uv_cmd.append("--system")
     
     with _preserve_logging_handlers():
@@ -34,7 +35,6 @@ def install_library(name):
         logger.info(f"Installed successfully with uv: {packages}")
         return True
     
-    # try pip
     logger.warning(f"Trying pip: {packages}")
     
     with _preserve_logging_handlers():
