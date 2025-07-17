@@ -1,10 +1,57 @@
-import subprocess
+import pip
+import os
 import sys
+import logging
+
+from contextlib import contextmanager
+
+logger = logging.getLogger('FoxUserbot')
+
+@contextmanager
+def _preserve_logging_handlers():
+    root_logger = logging.getLogger()
+    original_handlers = root_logger.handlers.copy()
+    try:
+        yield
+    finally:
+        for handler in root_logger.handlers[:]:
+            if handler not in original_handlers:
+                root_logger.removeHandler(handler)
+        root_logger.handlers = original_handlers
 
 def install_library(name):
-    requirements = ["install"]
-    for i in name.split():
-        requirements.append(i)
+    packages = name.split() if isinstance(name, str) else name
     
-    print(requirements)
-    subprocess.run([sys.executable, "-m", "uv", "pip"] + requirements + ["--system"], check=True)
+    # try uv
+    uv_cmd = [sys.executable, "-m", "uv", "pip", "install"] + packages
+    if os.name == "nt":
+        uv_cmd.append("--system")
+    
+    with _preserve_logging_handlers():
+        uv_result = os.system(" ".join(uv_cmd))
+    
+    if uv_result == 0:
+        logger.info(f"Installed successfully with uv: {packages}")
+        return True
+    
+    # try pip
+    logger.warning(f"Trying pip: {packages}")
+    
+    with _preserve_logging_handlers():
+        old_stdout = sys.stdout
+        old_stderr = sys.stderr
+        sys.stdout = open(os.devnull, 'w')
+        sys.stderr = open(os.devnull, 'w')
+        
+        try:
+            result = pip.main(["install"] + packages)
+        finally:
+            sys.stdout = old_stdout
+            sys.stderr = old_stderr
+    
+    if result == 0:
+        logger.info(f"Installed successfully with pip: {packages}")
+    else:
+        logger.error(f"Failed: {packages}")
+    
+    return result == 0
