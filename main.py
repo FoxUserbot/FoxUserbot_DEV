@@ -70,13 +70,11 @@ async def start_userbot(app):
 
 def setup_logging():
     log_file = 'temp/fox_userbot.log'
-    
-    # Удаляем все старые обработчики
+
     root_logger = logging.getLogger()
     for handler in root_logger.handlers[:]:
         root_logger.removeHandler(handler)
-    
-    # Настраиваем новые обработчики
+
     file_handler = logging.FileHandler(log_file, encoding='utf-8')
     console_handler = logging.StreamHandler()
     
