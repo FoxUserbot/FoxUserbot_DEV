@@ -56,7 +56,7 @@ from prefix import my_prefix
 # from requirements_installer import install_library
 # install_library("requests==2.32.3") 
 #
-# ^^^ pip3 install requests -U
+# ^^^ pip3 install requests==2.32.3
 #
 # =================================================
 #
